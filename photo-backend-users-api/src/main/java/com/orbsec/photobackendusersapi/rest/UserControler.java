@@ -19,7 +19,6 @@ import javax.validation.Valid;
 public class UserControler {
 
     private Environment environment;
-
     private UserService userService;
 
     @Autowired
@@ -36,19 +35,10 @@ public class UserControler {
     @PostMapping(path = "/add", consumes = {"application/json", "application/xml"})
     public ResponseEntity<String> createUser(@Valid @RequestBody UserDto userDto, AbstractBindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(bindingResult.getFieldError().toString(),HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("An error has taken place", HttpStatus.BAD_REQUEST);
         }
-         var createduser = userService.save(createUser(userDto));
+        var createduser = userService.save(userDto);
         return new ResponseEntity<>("User created ", HttpStatus.CREATED);
-    }
-
-    private User createUser(UserDto userDto) {
-        User newUser = new User();
-        newUser.setFirstName(userDto.getFirstName());
-        newUser.setLastName(userDto.getLastName());
-        newUser.setEmail(userDto.getEmail());
-        newUser.setPassword(userDto.getPassword());
-        return newUser;
     }
 
 }
