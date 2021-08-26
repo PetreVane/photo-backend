@@ -2,6 +2,8 @@ package com.orbsec.photobackendusersapi.services;
 
 import com.orbsec.photobackendusersapi.domain.User;
 import com.orbsec.photobackendusersapi.domain.dto.UserDto;
+import com.orbsec.photobackendusersapi.exceptions.RegistrationError;
+import com.orbsec.photobackendusersapi.exceptions.UserNotRegistered;
 import com.orbsec.photobackendusersapi.repository.UserRepository;
 import lombok.var;
 import org.modelmapper.ModelMapper;
@@ -29,7 +31,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User save(UserDto dto) {
         var user = mapUserFrom(dto);
-        return userRepository.save(user);
+        try {
+            return userRepository.save(user);
+        } catch (Exception exception) {
+            throw new UserNotRegistered("Registration failed. A record with this email address already exists");
+        }
     }
 
     private User mapUserFrom(UserDto userDto) {
