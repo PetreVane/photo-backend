@@ -2,7 +2,6 @@ package com.orbsec.photobackendusersapi.domain.dto;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.constraints.*;
 import java.util.UUID;

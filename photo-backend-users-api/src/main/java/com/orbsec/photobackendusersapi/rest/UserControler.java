@@ -1,9 +1,12 @@
 package com.orbsec.photobackendusersapi.rest;
 
+import com.orbsec.photobackendusersapi.domain.User;
+import com.orbsec.photobackendusersapi.domain.UserResponse;
 import com.orbsec.photobackendusersapi.domain.dto.UserDto;
+import com.orbsec.photobackendusersapi.exceptions.UserNotRegistered;
 import com.orbsec.photobackendusersapi.services.UserService;
-import com.orbsec.photobackendusersapi.services.UserServiceImpl;
 import lombok.var;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -32,12 +35,21 @@ public class UserControler {
     }
 
     @PostMapping(path = "/add", consumes = {"application/json", "application/xml"})
-    public ResponseEntity<String> createUser(@Valid @RequestBody UserDto userDto, AbstractBindingResult bindingResult) {
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserDto userDto, AbstractBindingResult bindingResult) throws UserNotRegistered {
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>("An error has taken place", HttpStatus.BAD_REQUEST);
+            throw new UserNotRegistered("An error has occurred while trying to register user. Check your input values and try again.");
         }
-        var createduser = userService.save(userDto);
-        return new ResponseEntity<>("User created ", HttpStatus.CREATED);
+        try {
+            var createdUser = userService.save(userDto);
+            return new ResponseEntity<>(getResponse(createdUser), HttpStatus.CREATED);
+        } catch (UserNotRegistered exception) {
+            throw exception;
+        }
+    }
+
+    private UserResponse getResponse(User user) {
+        ModelMapper modelmapper = new ModelMapper();
+       return modelmapper.map(user, UserResponse.class);
     }
 
 }
