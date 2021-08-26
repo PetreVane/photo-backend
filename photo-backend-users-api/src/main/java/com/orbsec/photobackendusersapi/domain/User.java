@@ -1,33 +1,33 @@
 package com.orbsec.photobackendusersapi.domain;
 
 import lombok.*;
-import sun.jvm.hotspot.memory.Generation;
-
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
-public class User {
+@Table(name="users")
+public class User implements Serializable {
 
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false, length = 255)
     private String firstName;
 
-    @Column
+    @Column(nullable = false, length = 255)
     private String lastName;
 
-    @Column
+    @Column(nullable = false, length = 255, unique = true)
     private String email;
 
     @Column
     private String password;
+
+    @Column(nullable = false, unique = true)
+    private String userId;
 }
