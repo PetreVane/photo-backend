@@ -18,13 +18,13 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
-public class UserControler {
+public class UserController {
 
     private Environment environment;
     private UserService userService;
 
     @Autowired
-    public UserControler(Environment environment, UserService userService) {
+    public UserController(Environment environment, UserService userService) {
         this.environment = environment;
         this.userService = userService;
     }
@@ -43,7 +43,7 @@ public class UserControler {
             var createdUser = userService.save(userDto);
             return new ResponseEntity<>(getResponse(createdUser), HttpStatus.CREATED);
         } catch (UserNotRegistered exception) {
-            throw exception;
+            throw exception; // this will be handled by the ErrorHandler
         }
     }
 
