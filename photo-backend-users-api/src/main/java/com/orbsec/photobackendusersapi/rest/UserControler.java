@@ -1,15 +1,14 @@
 package com.orbsec.photobackendusersapi.rest;
 
-import com.orbsec.photobackendusersapi.domain.User;
 import com.orbsec.photobackendusersapi.domain.dto.UserDto;
 import com.orbsec.photobackendusersapi.services.UserService;
+import com.orbsec.photobackendusersapi.services.UserServiceImpl;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.AbstractBindingResult;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
