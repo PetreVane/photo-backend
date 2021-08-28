@@ -1,6 +1,6 @@
 package com.orbsec.photobackendusersapi.repository;
 
-import com.orbsec.photobackendusersapi.domain.User;
+import com.orbsec.photobackendusersapi.domain.models.User;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
