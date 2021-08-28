@@ -1,17 +1,13 @@
-package com.orbsec.photobackendusersapi.domain;
+package com.orbsec.photobackendusersapi.domain.models;
 
 import lombok.Data;
 
 
 @Data
-public class UserResponse {
+public class UserResponseDto {
 
     private String firstName;
-
     private String lastName;
-
     private String email;
-
     private String userId;
-
 }

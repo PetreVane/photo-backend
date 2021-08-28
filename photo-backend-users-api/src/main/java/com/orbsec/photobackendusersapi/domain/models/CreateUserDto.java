@@ -1,4 +1,4 @@
-package com.orbsec.photobackendusersapi.domain.dto;
+package com.orbsec.photobackendusersapi.domain.models;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +7,7 @@ import javax.validation.constraints.*;
 import java.util.UUID;
 
 @Data
-public class UserDto {
+public class CreateUserDto {
 
 
     @NotBlank(message = "First name cannot be empty")
@@ -28,7 +28,7 @@ public class UserDto {
 
     private String userId;
 
-    public UserDto(String firstName, String lastName, String email, String password) {
+    public CreateUserDto(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

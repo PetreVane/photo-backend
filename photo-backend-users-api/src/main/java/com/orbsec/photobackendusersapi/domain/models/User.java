@@ -1,4 +1,4 @@
-package com.orbsec.photobackendusersapi.domain;
+package com.orbsec.photobackendusersapi.domain.models;
 
 import lombok.*;
 import javax.persistence.*;
