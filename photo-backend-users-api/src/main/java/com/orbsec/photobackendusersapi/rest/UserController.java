@@ -52,4 +52,14 @@ public class UserController {
        return modelmapper.map(user, UserResponseDto.class);
     }
 
+    @PutMapping(path ="/update", consumes = {"application/json", "application/xml"}, produces = {"application/json", "application/xml"})
+    public String updateUser() {
+        return "Updating user now ...";
+    }
+
+    @DeleteMapping(path ="/delete", consumes = {"application/json", "application/xml"}, produces = {"application/json", "application/xml"})
+    public String deleteUser() {
+        return "Deleting user now ...";
+    }
+
 }
