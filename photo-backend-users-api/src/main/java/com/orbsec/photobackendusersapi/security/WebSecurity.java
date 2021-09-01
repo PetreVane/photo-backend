@@ -33,6 +33,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .addFilter(getAuthenticationFilter());
         http.headers().frameOptions().disable();
         //http.authorizeRequests().antMatchers("/users/**", "/h2-console/**").permitAll();
+        //.hasIpAddress(environment.getProperty("gateway.ip")) / .permitAll()
     }
 
     private AuthenticationFilter getAuthenticationFilter() throws Exception {
