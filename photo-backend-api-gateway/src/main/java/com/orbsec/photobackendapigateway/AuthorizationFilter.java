@@ -4,6 +4,7 @@ import io.jsonwebtoken.Jwts;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -33,18 +34,20 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
             var request = exchange.getRequest();
 
             // make sure the request object contains a key with the title "Authorization". Notice the '!' in front of the boolean returned by this evaluation
-            if (!request.getHeaders().containsKey("Authorization")) {
+            if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 return onError(exchange, "No authorization header", HttpStatus.UNAUTHORIZED);
             }
             // extract the header from the request --> this returns an array. Get the first object.
-            var header = request.getHeaders().get("Authorization").get(0);
+            var header = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
 
             // extract the token from header. Remove the word 'Bearer'
             var token = header.replace("Bearer", "");
 
             // send token for validation
             var validToken = isTokenValid(token);
-            if (!validToken) return onError(exchange, "Invalid Token", HttpStatus.UNAUTHORIZED);
+            if (!validToken) {
+                return onError(exchange, "Invalid Token", HttpStatus.UNAUTHORIZED);
+            }
             return chain.filter(exchange);
         });
     }
@@ -53,18 +56,23 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
     private Mono<Void> onError(ServerWebExchange exchange, String error, HttpStatus statusCode) {
         var response = exchange.getResponse();
         response.setStatusCode(statusCode);
-
         return response.setComplete();
     }
 
     // token validation
     private boolean isTokenValid(String token) {
         boolean tokenIsValid = true;
-        var subject = Jwts.parser()
-                .setSigningKey(environment.getProperty("token.secret"))
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        String subject = null;
+        try {
+            subject = Jwts.parser()
+                    .setSigningKey(environment.getProperty("token.secret"))
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+        } catch (Exception e) {
+            tokenIsValid = false;
+        }
+
 
         if (subject == null || subject.isEmpty()) {
             tokenIsValid = false;
