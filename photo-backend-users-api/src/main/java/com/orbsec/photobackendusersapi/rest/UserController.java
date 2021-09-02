@@ -31,7 +31,9 @@ public class UserController {
 
     @GetMapping("/status")
     public String getStatus() {
-        return "Users microservice is up and running on port " + environment.getProperty("local.server.port");
+        var secretToken = environment.getProperty("token.secret");
+        var portNumber = environment.getProperty("local.server.port");
+        return "Users microservice is up and running on port " + portNumber + " and secret token " + secretToken;
     }
 
     @PostMapping(path = "/add", consumes = {"application/json", "application/xml"}, produces = {"application/json", "application/xml"})
