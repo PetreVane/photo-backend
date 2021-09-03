@@ -41,27 +41,23 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             throw new UserNotRegistered("An error has occurred while trying to register user. Check your input values and try again.");
         }
-        try {
-            var createdUser = userService.save(createUserDto);
-            return new ResponseEntity<>(getResponse(createdUser), HttpStatus.CREATED);
-        } catch (UserNotRegistered exception) {
-            throw exception; // this will be handled by the ErrorHandler
-        }
+
+        UserResponseDto userResponseDto = userService.save(createUserDto);
+        return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
     }
 
-    private UserResponseDto getResponse(User user) {
-        ModelMapper modelmapper = new ModelMapper();
-       return modelmapper.map(user, UserResponseDto.class);
-    }
 
     @PutMapping(path ="/update", consumes = {"application/json", "application/xml"}, produces = {"application/json", "application/xml"})
     public String updateUser() {
         return "Updating user now ...";
     }
 
-    @DeleteMapping(path ="/delete", consumes = {"application/json", "application/xml"}, produces = {"application/json", "application/xml"})
-    public String deleteUser() {
-        return "Deleting user now ...";
+
+    @DeleteMapping(path ="/delete/{email}", consumes = {"application/json", "application/xml"}, produces = {"application/json", "application/xml"})
+    public String deleteUser(@PathVariable String email) throws UserNotRegistered {
+        userService.deleteUser(email);
+        return "User " + email + " has just been deleted...";
     }
+
 
 }
