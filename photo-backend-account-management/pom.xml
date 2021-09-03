@@ -70,6 +70,21 @@
 			<artifactId>spring-cloud-starter-bus-amqp</artifactId>
 			<scope>compile</scope>
 		</dependency>
+
+		<!--  Spring Cloud Bootstrap       -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-bootstrap</artifactId>
+			<scope>compile</scope>
+		</dependency>
+
+		<!--        Spring cloud config     -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+			<scope>compile</scope>
+		</dependency>
+
     </dependencies>
 	<dependencyManagement>
 		<dependencies>
