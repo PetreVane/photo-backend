@@ -1,8 +1,8 @@
 package com.orbsec.photobackendusersapi.rest;
 
 import com.orbsec.photobackendusersapi.domain.models.CreateUserDto;
-import com.orbsec.photobackendusersapi.domain.models.User;
 import com.orbsec.photobackendusersapi.domain.models.UserResponseDto;
+import com.orbsec.photobackendusersapi.exceptions.UserAccountNotFound;
 import com.orbsec.photobackendusersapi.exceptions.UserNotRegistered;
 import com.orbsec.photobackendusersapi.services.UserService;
 import lombok.var;
@@ -54,10 +54,9 @@ public class UserController {
 
 
     @DeleteMapping(path ="/delete/{email}", consumes = {"application/json", "application/xml"}, produces = {"application/json", "application/xml"})
-    public String deleteUser(@PathVariable String email) throws UserNotRegistered {
+    public String deleteUser(@PathVariable String email) throws UserAccountNotFound {
         userService.deleteUser(email);
         return "User " + email + " has just been deleted...";
     }
-
 
 }
