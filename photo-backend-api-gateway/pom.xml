@@ -86,7 +86,15 @@
             <artifactId>spring-cloud-starter-bus-amqp</artifactId>
             <scope>compile</scope>
         </dependency>
-        
+
+        <!-- spring-boot-actuator -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <version>2.5.2</version>
+        </dependency>
+
+
     </dependencies>
 
 

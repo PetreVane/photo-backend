@@ -28,12 +28,13 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
-        http.authorizeRequests().antMatchers("/**").hasIpAddress(environment.getProperty("gateway.ip"))
+        http.authorizeRequests()
+                .antMatchers("/**").hasIpAddress(environment.getProperty("gateway.ip"))
+                .antMatchers(environment.getProperty("api.users.actuator.url.path")).permitAll()
+                .antMatchers(environment.getProperty("api.gateway.actuator.url.path")).permitAll()
                 .and()
                 .addFilter(getAuthenticationFilter());
         http.headers().frameOptions().disable();
-        //http.authorizeRequests().antMatchers("/users/**", "/h2-console/**").permitAll();
-        //.hasIpAddress(environment.getProperty("gateway.ip")) / .permitAll()
     }
 
     private AuthenticationFilter getAuthenticationFilter() throws Exception {
