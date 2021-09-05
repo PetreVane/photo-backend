@@ -3,6 +3,7 @@ package com.orbsec.photobackendusersapi.services;
 import com.orbsec.photobackendusersapi.domain.models.CreateUserDto;
 import com.orbsec.photobackendusersapi.domain.models.User;
 import com.orbsec.photobackendusersapi.domain.models.UserResponseDto;
+import com.orbsec.photobackendusersapi.exceptions.UserAccountNotFound;
 import com.orbsec.photobackendusersapi.exceptions.UserNotRegistered;
 import com.orbsec.photobackendusersapi.repository.UserRepository;
 import lombok.var;
@@ -69,7 +70,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(String email) {
         var optionalUser = userRepository.findUserByEmail(email);
-        if (!optionalUser.isPresent()) throw new UsernameNotFoundException(email);
+        if (!optionalUser.isPresent()) throw new UserAccountNotFound(email);
+
         var existingUser = optionalUser.get();
          userRepository.delete(existingUser);
     }
