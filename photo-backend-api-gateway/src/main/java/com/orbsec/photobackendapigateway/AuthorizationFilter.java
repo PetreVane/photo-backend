@@ -12,11 +12,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.logging.Logger;
+
 @Component
 public class AuthorizationFilter extends AbstractGatewayFilterFactory<AuthorizationFilter.Config> {
 
     @Autowired
     private Environment environment;
+    private Logger logger = Logger.getLogger(getClass().getName());
 
     public AuthorizationFilter() {
         super(Config.class);
@@ -33,7 +36,7 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
             // get the request object from the exchange server
             var request = exchange.getRequest();
 
-            // make sure the request object contains a key with the title "Authorization". Notice the '!' in front of the boolean returned by this evaluation
+//            // make sure the request object contains a key with the title "Authorization". Notice the '!' in front of the boolean returned by this evaluation
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 return onError(exchange, "No authorization header", HttpStatus.UNAUTHORIZED);
             }
@@ -42,6 +45,7 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
 
             // extract the token from header. Remove the word 'Bearer'
             var token = header.replace("Bearer", "");
+            logger.info("AUTHORIZATION TOKEN: " + token);
 
             // send token for validation
             var validToken = isTokenValid(token);

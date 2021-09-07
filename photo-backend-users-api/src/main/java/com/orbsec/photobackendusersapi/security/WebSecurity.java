@@ -2,13 +2,16 @@ package com.orbsec.photobackendusersapi.security;
 
 import com.orbsec.photobackendusersapi.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
 @EnableWebSecurity
@@ -28,13 +31,14 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
+        http.headers().frameOptions().disable();
         http.authorizeRequests()
-                .antMatchers("/**").hasIpAddress(environment.getProperty("gateway.ip"))
                 .antMatchers(environment.getProperty("api.users.actuator.url.path")).permitAll()
                 .antMatchers(environment.getProperty("api.gateway.actuator.url.path")).permitAll()
                 .and()
                 .addFilter(getAuthenticationFilter());
-        http.headers().frameOptions().disable();
+        // .antMatchers("/**").hasIpAddress(environment.getProperty("gateway.ip"))
+
     }
 
     private AuthenticationFilter getAuthenticationFilter() throws Exception {
