@@ -1,0 +1,21 @@
+package com.orbsec.photobackendusersapi.services;
+
+import com.orbsec.photobackendusersapi.domain.models.AlbumResponseDto;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
+
+@FeignClient(name = "albums-ms")
+public interface AlbumsServiceClient {
+
+    @GetMapping("/albums/status")
+    String getStatus();
+
+    @GetMapping(path = "/albumss/")
+    List<AlbumResponseDto> findAllAlbums();
+
+    @GetMapping(path ="/albums/{albumId}", produces = {"application/json", "application/xml"})
+    AlbumResponseDto findAlbumById(@PathVariable String albumId);
+}

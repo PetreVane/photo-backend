@@ -6,9 +6,13 @@ import com.orbsec.photobackendusersapi.domain.models.User;
 import com.orbsec.photobackendusersapi.domain.models.UserResponseDto;
 import com.orbsec.photobackendusersapi.exceptions.UserAccountNotFound;
 import com.orbsec.photobackendusersapi.exceptions.UserNotRegistered;
+import com.orbsec.photobackendusersapi.services.AlbumsServiceClient;
 import com.orbsec.photobackendusersapi.services.UserService;
+import feign.FeignException;
 import lombok.var;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
@@ -27,13 +31,14 @@ public class UserController {
 
     private Environment environment;
     private UserService userService;
-    private RestTemplate restTemplate;
+    private AlbumsServiceClient albumsServiceClient;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public UserController(Environment environment, UserService userService, RestTemplate restTemplate) {
+    public UserController(Environment environment, UserService userService, AlbumsServiceClient albumsServiceClient) {
         this.environment = environment;
         this.userService = userService;
-        this.restTemplate = restTemplate;
+        this.albumsServiceClient = albumsServiceClient;
     }
 
     @GetMapping("/status")
@@ -46,22 +51,20 @@ public class UserController {
 
     @GetMapping(path = "/get/{userID}", produces = {"application/json", "application/xml"})
     public UserResponseDto getUserByID(@PathVariable String userID) throws UserAccountNotFound {
-        System.out.println("Calling user service now ...");
         return userService.findUserById(userID);
     }
 
     @GetMapping(path = "/{userID}", produces = {"application/json", "application/xml"})
     public UserResponseDto getUserByIdAndAlbums(@PathVariable String userID) throws UserAccountNotFound {
-        System.out.println("Calling user service now ...");
-        String url = "http://localhost:8080/albums-ms/albums/1";
-        var referenceType= new ParameterizedTypeReference<List<AlbumResponseDto>>() {};
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML));
-        HttpEntity entity = new HttpEntity(headers);
 
-        var response = restTemplate.exchange(url, HttpMethod.GET, entity, referenceType);
-        var actualList = response.getBody();
+        List<AlbumResponseDto> actualList = null;
+
+        try {
+            actualList = albumsServiceClient.findAllAlbums();
+        } catch (FeignException feignException) {
+            logger.error(feignException.getLocalizedMessage());
+        }
+
         var user = userService.findUserById(userID);
         user.setAlbums(actualList);
         return user;
@@ -69,8 +72,7 @@ public class UserController {
 
     @GetMapping(path = "/albums/status")
     public String testRestTemplate() {
-        String url = "http://192.168.1.135:56343/albums/status";
-        return restTemplate.getForObject(url, String.class);
+        return albumsServiceClient.getStatus();
     }
 
     @GetMapping(produces = {"application/json", "application/xml"})
@@ -100,16 +102,6 @@ public class UserController {
     public String deleteUser(@PathVariable String email) throws UserAccountNotFound {
         userService.deleteUser(email);
         return "User " + email + " has just been deleted...";
-    }
-
-    public void getResourcesFromAlbumMS() {
-//        URI url = new URI("http://localhost:8080/albums-ms/albums");
-//        RequestEntity request = new RequestEntity(HttpMethod.GET, url);
-
-//        String ur2l = "http://albums-ms/albums/";
-//        var referenceType= new ParameterizedTypeReference<List<AlbumResponseDto>>() {};
-//        var response = restTemplate.exchange(url, HttpMethod.GET, null, referenceType);
-//        var actualList = response.getBody();
     }
 
 }
