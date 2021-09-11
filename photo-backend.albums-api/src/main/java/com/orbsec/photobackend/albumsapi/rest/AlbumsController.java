@@ -39,8 +39,8 @@ public class AlbumsController {
         return "Albums microservice is up and running on port " + portNumber + " and secret token " + secretToken;
     }
 
-    @GetMapping(path ="/{albumId}", consumes = {"application/json", "application/xml"}, produces = {"application/json", "application/xml"} )
-    public List<AlbumEntity> getAlbums(@PathVariable String albumId) {
+    @GetMapping(path ="/{albumId}", produces = {"application/json", "application/xml"} )
+    public List<AlbumEntity> getAlbumById(@PathVariable String albumId) {
         List<AlbumEntity> albums = new ArrayList<>();
         var album = albumService.getAlbumsById(albumId);
         album.ifPresent(albums::add);
@@ -51,7 +51,7 @@ public class AlbumsController {
         return albums;
     }
 
-    @GetMapping(consumes = {"application/json", "application/xml"}, produces = {"application/json", "application/xml"})
+    @GetMapping(produces = {"application/json", "application/xml"})
     public List<AlbumEntity> getAllAlbums() {
         return albumService.getAllAlbums();
     }

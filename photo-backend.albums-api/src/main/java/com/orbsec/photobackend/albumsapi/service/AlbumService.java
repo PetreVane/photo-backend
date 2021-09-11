@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface AlbumService {
     Optional<AlbumEntity> getAlbumsById(String albumId);
+
     List<AlbumEntity> getAllAlbums();
 }
