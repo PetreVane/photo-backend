@@ -14,9 +14,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -41,6 +45,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findUserByEmail(String email) {
         return userRepository.findUserByEmail(email);
+    }
+
+    @Override
+    public UserResponseDto findUserById(String userID) throws UserAccountNotFound {
+        UserResponseDto userResponseDto = null;
+        try {
+            var optionalUser = userRepository.findUserByUserId(userID).get();
+            userResponseDto = mapUserToDto(optionalUser);
+        } catch (NoSuchElementException e) {
+            throw new UserAccountNotFound(e.getMessage());
+        }
+        return userResponseDto;
+    }
+
+    @Override
+    public List<UserResponseDto> findAll() {
+       return Flux.fromIterable(userRepository.findAll()).map(user -> mapUserToDto(user)).toStream().collect(Collectors.toList());
     }
 
     @Override

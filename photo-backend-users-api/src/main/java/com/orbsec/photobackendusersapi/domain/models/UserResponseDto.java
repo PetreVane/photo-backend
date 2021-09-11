@@ -2,6 +2,8 @@ package com.orbsec.photobackendusersapi.domain.models;
 
 import lombok.Data;
 
+import java.util.List;
+
 
 @Data
 public class UserResponseDto {
@@ -10,4 +12,5 @@ public class UserResponseDto {
     private String lastName;
     private String email;
     private String userId;
+    private List<AlbumResponseDto> albums;
 }
