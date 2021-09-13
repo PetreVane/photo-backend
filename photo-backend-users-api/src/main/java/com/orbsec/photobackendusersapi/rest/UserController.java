@@ -32,7 +32,6 @@ public class UserController {
     private Environment environment;
     private UserService userService;
     private AlbumsServiceClient albumsServiceClient;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public UserController(Environment environment, UserService userService, AlbumsServiceClient albumsServiceClient) {
@@ -57,14 +56,7 @@ public class UserController {
     @GetMapping(path = "/{userID}", produces = {"application/json", "application/xml"})
     public UserResponseDto getUserByIdAndAlbums(@PathVariable String userID) throws UserAccountNotFound {
 
-        List<AlbumResponseDto> actualList = null;
-
-        try {
-            actualList = albumsServiceClient.findAllAlbums();
-        } catch (FeignException feignException) {
-            logger.error(feignException.getLocalizedMessage());
-        }
-
+        List<AlbumResponseDto> actualList = albumsServiceClient.findAllAlbums();
         var user = userService.findUserById(userID);
         user.setAlbums(actualList);
         return user;

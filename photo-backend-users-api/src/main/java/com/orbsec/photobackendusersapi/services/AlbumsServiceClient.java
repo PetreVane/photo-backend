@@ -13,7 +13,7 @@ public interface AlbumsServiceClient {
     @GetMapping("/albums/status")
     String getStatus();
 
-    @GetMapping(path = "/albumss/")
+    @GetMapping(path = "/albums/")
     List<AlbumResponseDto> findAllAlbums();
 
     @GetMapping(path ="/albums/{albumId}", produces = {"application/json", "application/xml"})
