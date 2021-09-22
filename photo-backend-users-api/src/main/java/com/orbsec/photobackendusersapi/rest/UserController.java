@@ -32,6 +32,7 @@ public class UserController {
     private Environment environment;
     private UserService userService;
     private AlbumsServiceClient albumsServiceClient;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public UserController(Environment environment, UserService userService, AlbumsServiceClient albumsServiceClient) {
@@ -56,7 +57,9 @@ public class UserController {
     @GetMapping(path = "/{userID}", produces = {"application/json", "application/xml"})
     public UserResponseDto getUserByIdAndAlbums(@PathVariable String userID) throws UserAccountNotFound {
 
+        logger.info("Before calling Albums Microservice");
         List<AlbumResponseDto> actualList = albumsServiceClient.findAllAlbums();
+        logger.info("After calling Albums Microservice");
         var user = userService.findUserById(userID);
         user.setAlbums(actualList);
         return user;
