@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto save(CreateUserDto dto) {
+    public UserResponseDto save(CreateUserDto dto) throws UserNotRegistered {
         var user = modelMapper.map(dto, User.class);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
@@ -92,9 +92,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(String email) {
         var optionalUser = userRepository.findUserByEmail(email);
         if (!optionalUser.isPresent()) throw new UserAccountNotFound(email);
-
-        var existingUser = optionalUser.get();
-         userRepository.delete(existingUser);
+         userRepository.delete(optionalUser.get());
     }
 
     private UserResponseDto mapUserToDto(User user) {
