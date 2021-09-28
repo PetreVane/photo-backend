@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.net.UnknownHostException;
+
 @RestControllerAdvice
 public class ErrorHandler {
 
@@ -23,6 +25,16 @@ public class ErrorHandler {
     @ExceptionHandler(UserAccountNotFound.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "There is no user with this email address!")
     public RegistrationError userMissingErrorHandler (UserAccountNotFound exception) {
+        var error = new RegistrationError();
+        error.setErrorMessage(exception.getMessage());
+        error.setStatusCode(HttpStatus.NOT_FOUND.value());
+        error.setTimestamp(System.currentTimeMillis());
+        return error;
+    }
+
+    @ExceptionHandler(UnknownHostException.class)
+    @ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE, reason = "Unknown Host Exception thrown!")
+    public RegistrationError handleUnknownHost (UnknownHostException exception) {
         var error = new RegistrationError();
         error.setErrorMessage(exception.getMessage());
         error.setStatusCode(HttpStatus.NOT_FOUND.value());
