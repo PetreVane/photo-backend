@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -23,13 +24,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
-
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private Environment environment;
-    private UserService userService;
+    private final Environment environment;
+    private final UserService userService;
 
-    @Autowired
+
     public AuthenticationFilter(Environment environment, UserService userService, AuthenticationManager authenticationManager) {
         super.setAuthenticationManager(authenticationManager);
         this.environment = environment;
